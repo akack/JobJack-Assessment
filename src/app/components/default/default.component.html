@@ -1,0 +1,55 @@
+<div class="container">
+    <div class="d-flex justify-content-center" *ngIf="loading">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div *ngIf="!loading">
+        <h4>Welcome to JOBJACK directory</h4>
+        <label for="">Enter Path (/)*</label>
+        <div class="input-group input-group-sm mb-3">
+            <span class="input-group-text" id="inputGroup-sizing-sm">File Path: e.g /documents</span>
+            <input [(ngModel)]="filePath" type="text" class="form-control" aria-label="Sizing example input"
+                aria-describedby="inputGroup-sizing-sm" [disabled]="_array.length > 0">
+        </div>
+        <button type="button" (click)="submitData(filePath)" class="btn btn-primary" *ngIf="_array.length === 0">Submit</button>
+        <button type="button" (click)="reset()" class="btn btn-primary" *ngIf="_array.length > 0 && filePath">Reset</button>
+
+    </div>
+    <br/>
+    <div class="d-flex justify-content-center" *ngIf="_array.length === 0 && !loading">
+        <p *ngIf="!error">{{ msg }}</p>
+        <p *ngIf="error" class="has-error">{{error}}</p>
+    </div>
+    <div *ngIf="_array.length > 0 && !loading">
+        <div class="form-group">
+            <strong>Filter by file type</strong>
+            <select class="form-control"
+                    [(ngModel)]="type">
+            <option value="">All</option>      
+            <option value="directory">Directory</option>
+            <option value="file">File</option>
+            </select>
+        </div> 
+        <div class="table-responsive">
+        
+            <table class="table table-striped" >
+                <thead>
+                <tr>
+                    <th scope="col" *ngFor="let head of headElements" scope="col">{{head}} </th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let el of _array | tableFilter: type">
+                    <th scope="row" *ngIf="el.type === 'directory'"><a href="#" (click)="submitData(el.name)">{{el.name}}</a></th>
+                    <th scope="row" *ngIf="el.type !== 'directory'">{{el.name}}</th>
+                    <td>{{el.path}}</td>
+                    <td>{{el.type}}</td>
+                    <td>{{el.size}}</td>
+                    <td>{{el.mtime}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
